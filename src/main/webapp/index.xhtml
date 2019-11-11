@@ -14,53 +14,28 @@
         <link rel="shortcut icon" type="image/x-icon" href="omega-layout/images/dgrflogo.png"/>
         <title>Purankosh Statistics</title>
     </h:head>
+    <h:body>
+        <p:graphicImage name="images/dgrflogo.png" library="omega-layout" width="40" height="20" style="padding-left: 45%"/>
+        <p:panelGrid columns="2" layout="grid" >
+            <p:chart type="line" model="#{liveStatus.lineModel}" style="height:500px;"/>
+            <p:chart type="line" model="#{liveStatus.lineModel}" style="height:500px;"/>
+            <p:chart type="line" model="#{liveStatus.lineModel}" style="height:500px;"/>
+            <p:chart type="line" model="#{liveStatus.lineModel}" style="height:500px;"/>
+        </p:panelGrid>
 
-    <h:body styleClass="login-body">
 
-        <div id="login-wrapper">
-            
-            <p:graphicImage name="images/dgrflogo.png" library="omega-layout" width="40" height="20"/>
-            <div id="login-container">
-                <span class="title">Purankosh Statistics</span>
-                <f:metadata>
 
-                    <f:viewAction action="#" />
-                </f:metadata>
-                <h:form>
-                    <div class="ui-g ui-fluid" style="text-align: left">
-                        <p:growl id="growl" sticky="true" showDetail="true" life="5"  />
-                        <div class="ui-g-6">
-                            h
-                        </div>
-                        <div class="ui-g-6">
-                            f
-                        </div>
-                        <div class="ui-g-12">
-                            h
-                        </div>
-                        <div class="ui-g-12">
+       
 
-                            i
-                        </div>
 
-                        <div class="ui-g-6">
-                            j
-                        </div>
-                        <div class="ui-g-6">
-                            k
-                        </div>
-                        <div class="ui-g-12">
-                            mao
-                        </div>
-                    </div>
-                </h:form>
-            </div>
 
-            <div class="login-footer">©  <a class="tag-cloud-link" href="http://www.dgfoundation.in">Deepa Ghosh Research Foundation</a></div>
-        </div>
+
+
+        <div style="text-align: center">©  <a class="tag-cloud-link" href="http://www.dgfoundation.in">Deepa Ghosh Research Foundation</a></div>
+
 
         <h:outputStylesheet name="css/layout.css" library="omega-layout" />
-        
+
     </h:body>
 
 </html>
