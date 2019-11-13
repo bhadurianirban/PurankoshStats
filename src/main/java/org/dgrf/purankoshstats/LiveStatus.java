@@ -42,6 +42,7 @@ public class LiveStatus  implements Serializable{
     }
     
     private LineChartModel initCategoryModel() {
+        getData();
         LineChartModel model = new LineChartModel();
  
         ChartSeries boys = new ChartSeries();
@@ -80,5 +81,9 @@ public class LiveStatus  implements Serializable{
  
         
         
+    }
+    private void getData() {
+        String statsFileName = "/home/bhaduri/MEGA/purankosh/stats/Content20191107.csv";
+        new ReadData(statsFileName).readStatsData().printOnConsole();
     }
 }

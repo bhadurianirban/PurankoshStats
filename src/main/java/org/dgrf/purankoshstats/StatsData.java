@@ -17,6 +17,11 @@ public class StatsData {
     public StatsData(List<EntryDetails> entryDetailsList) {
         this.entryDetailsList = entryDetailsList;
     }
-   
+    
+    public void printOnConsole() {
+        entryDetailsList.stream().forEach(ed -> {
+            System.out.println(ed.getPostAuthor()+ed.getPostTitle()+ed.getPostPublishDate());
+        });
+    }
    
 }
