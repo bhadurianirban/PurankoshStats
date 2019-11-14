@@ -6,6 +6,9 @@
 package org.dgrf.purankoshstats;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -22,7 +25,7 @@ import org.primefaces.model.chart.LineChartModel;
 @Named(value = "liveStatus")
 @ViewScoped
 public class LiveStatus  implements Serializable{
-    private LineChartModel lineModel;
+    private LineChartModel entryCount;
     /**
      * Creates a new instance of LiveStatus
      */
@@ -33,57 +36,68 @@ public class LiveStatus  implements Serializable{
         createLineModels();
     }
 
-    public LineChartModel getLineModel() {
-        return lineModel;
+    public LineChartModel getEntryCount() {
+        return entryCount;
     }
 
-    public void setLineModel(LineChartModel lineModel) {
-        this.lineModel = lineModel;
+    public void setEntryCount(LineChartModel entryCount) {
+        this.entryCount = entryCount;
     }
+
+    
     
     private LineChartModel initCategoryModel() {
-        getData();
+        Map<String,Integer> monthWisePostCount = getData();
+        ArrayList<String> sortedKeys = new ArrayList<String>(monthWisePostCount.keySet()); 
+        Collections.sort(sortedKeys);
         LineChartModel model = new LineChartModel();
  
-        ChartSeries boys = new ChartSeries();
-        boys.setLabel("Boys");
-        boys.set("2004", 120);
-        boys.set("2005", 100);
-        boys.set("2006", 44);
-        boys.set("2007", 150);
-        boys.set("2008", 25);
+        ChartSeries monthWisePostCountChartSeries = new ChartSeries();
+        monthWisePostCountChartSeries.setLabel("Month Wise Post Count");
+        for (String yearMonth: sortedKeys) {
+            monthWisePostCountChartSeries.set(yearMonth, monthWisePostCount.get(yearMonth));
+        }
+//        boys.set("2004", 120);
+//        boys.set("2005", 100);
+//        boys.set("2006", 44);
+//        boys.set("2007", 150);
+//        boys.set("2008", 25);
+// 
+//        ChartSeries girls = new ChartSeries();
+//        girls.setLabel("Girls");
+//        girls.set("2004", 52);
+//        girls.set("2005", 60);
+//        girls.set("2006", 110);
+//        girls.set("2007", 90);
+//        girls.set("2008", 120);
  
-        ChartSeries girls = new ChartSeries();
-        girls.setLabel("Girls");
-        girls.set("2004", 52);
-        girls.set("2005", 60);
-        girls.set("2006", 110);
-        girls.set("2007", 90);
-        girls.set("2008", 120);
- 
-        model.addSeries(boys);
-        model.addSeries(girls);
+        model.addSeries(monthWisePostCountChartSeries);
+        //model.addSeries(girls);
  
         return model;
     }
     private void createLineModels() {
         
  
-        lineModel = initCategoryModel();
-        lineModel.setTitle("Category Chart");
-        lineModel.setLegendPosition("e");
-        lineModel.setShowPointLabels(true);
-        lineModel.getAxes().put(AxisType.X, new CategoryAxis("Years"));
-        Axis yAxis = lineModel.getAxis(AxisType.Y);
-        yAxis.setLabel("Births");
+        entryCount = initCategoryModel();
+        entryCount.setTitle("Category Chart");
+        entryCount.setLegendPosition("e");
+        entryCount.setShowPointLabels(true);
+        entryCount.setDatatipFormat("%'.0f");
+        entryCount.getAxes().put(AxisType.X, new CategoryAxis("YearsMonth"));
+        Axis yAxis = entryCount.getAxis(AxisType.Y);
+        yAxis.setLabel("Count");
         yAxis.setMin(0);
         yAxis.setMax(200);
- 
+        Axis xAxis = entryCount.getAxis(AxisType.X);
+        xAxis.setTickAngle(90);
         
         
     }
-    private void getData() {
-        String statsFileName = "/home/bhaduri/MEGA/purankosh/stats/Content20191107.csv";
-        new ReadData(statsFileName).readStatsData().printOnConsole();
+    private Map<String,Integer> getData() {
+        String statsFileName = "/home/dgrfi/MEGA/purankosh/stats/Content20191107.csv";
+        StatsData sd = new ReadData(statsFileName).readStatsData();
+        Map<String,Integer> monthWisePostCount = sd.calculateMonthWisePostCount();
+        return monthWisePostCount;
     }
 }

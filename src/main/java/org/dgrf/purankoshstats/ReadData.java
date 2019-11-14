@@ -43,7 +43,7 @@ public class ReadData {
                 String postTitle = lineItems[1];
                 Integer postid = Integer.parseInt(lineItems[2]);
                 Date postPublishDate = new Date();
-                SimpleDateFormat sd =  new SimpleDateFormat("yyyy-mm-dd");
+                SimpleDateFormat sd =  new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     postPublishDate =  sd.parse(lineItems[3]);
                 } catch (ParseException ex) {
