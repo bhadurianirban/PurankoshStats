@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
@@ -24,16 +25,27 @@ import org.primefaces.model.chart.LineChartModel;
  */
 @Named(value = "liveStatus")
 @ViewScoped
-public class LiveStatus  implements Serializable{
+public class LiveStatus implements Serializable {
+
+    private StatsData sd;
     private LineChartModel entryCount;
+    private LineChartModel wordCount;
+    private BarChartModel barModelWordByAuthor;
+    private BarChartModel barModelCountByAuthor;
+
     /**
      * Creates a new instance of LiveStatus
      */
     public LiveStatus() {
     }
+
     @PostConstruct
     public void init() {
-        createLineModels();
+        getData();
+        createEntryCountModel();
+        createWordCountModel();
+        createWordCountByAuthorModel();
+        createPostCountByAuthorModel();
     }
 
     public LineChartModel getEntryCount() {
@@ -44,60 +56,165 @@ public class LiveStatus  implements Serializable{
         this.entryCount = entryCount;
     }
 
+    public LineChartModel getWordCount() {
+        return wordCount;
+    }
+
+    public void setWordCount(LineChartModel wordCount) {
+        this.wordCount = wordCount;
+    }
+
+    public BarChartModel getBarModelWordByAuthor() {
+        return barModelWordByAuthor;
+    }
+
+    public void setBarModelWordByAuthor(BarChartModel barModelWordByAuthor) {
+        this.barModelWordByAuthor = barModelWordByAuthor;
+    }
+
+    public BarChartModel getBarModelCountByAuthor() {
+        return barModelCountByAuthor;
+    }
+
+    public void setBarModelCountByAuthor(BarChartModel barModelCountByAuthor) {
+        this.barModelCountByAuthor = barModelCountByAuthor;
+    }
     
-    
-    private LineChartModel initCategoryModel() {
-        Map<String,Integer> monthWisePostCount = getData();
-        ArrayList<String> sortedKeys = new ArrayList<String>(monthWisePostCount.keySet()); 
-        Collections.sort(sortedKeys);
-        LineChartModel model = new LineChartModel();
- 
-        ChartSeries monthWisePostCountChartSeries = new ChartSeries();
-        monthWisePostCountChartSeries.setLabel("Month Wise Post Count");
-        for (String yearMonth: sortedKeys) {
-            monthWisePostCountChartSeries.set(yearMonth, monthWisePostCount.get(yearMonth));
+  
+
+  
+
+    private BarChartModel initPostCountByAuthorModel() {
+        BarChartModel model = new BarChartModel();
+        Map<String, Integer> wordCountByAuthor = sd.calculateThisMonthPostCountByAuthor();
+        ChartSeries authorWordCountSeries = new ChartSeries();
+        authorWordCountSeries.setLabel("Post Count");
+        for (Map.Entry<String,Integer> authorWordCount: wordCountByAuthor.entrySet()) {
+            authorWordCountSeries.set(authorWordCount.getKey(), authorWordCount.getValue());
         }
-//        boys.set("2004", 120);
-//        boys.set("2005", 100);
-//        boys.set("2006", 44);
-//        boys.set("2007", 150);
-//        boys.set("2008", 25);
-// 
-//        ChartSeries girls = new ChartSeries();
-//        girls.setLabel("Girls");
-//        girls.set("2004", 52);
-//        girls.set("2005", 60);
-//        girls.set("2006", 110);
-//        girls.set("2007", 90);
-//        girls.set("2008", 120);
- 
-        model.addSeries(monthWisePostCountChartSeries);
-        //model.addSeries(girls);
- 
+        
+        model.addSeries(authorWordCountSeries);
         return model;
     }
-    private void createLineModels() {
-        
+    private void createPostCountByAuthorModel() {
+        barModelCountByAuthor = initPostCountByAuthorModel();
  
-        entryCount = initCategoryModel();
-        entryCount.setTitle("Category Chart");
+        barModelCountByAuthor.setTitle("This Month Entry Count");
+        barModelCountByAuthor.setLegendPosition("ne");
+        barModelCountByAuthor.setShowPointLabels(true);
+        Axis xAxis = barModelCountByAuthor.getAxis(AxisType.X);
+        xAxis.setLabel("Author");
+ 
+        Axis yAxis = barModelCountByAuthor.getAxis(AxisType.Y);
+        yAxis.setLabel("Entry Count");
+//        yAxis.setMin(0);
+//        yAxis.setMax(200);
+    }
+    
+    private BarChartModel initWordCountByAuthorModel() {
+        BarChartModel model = new BarChartModel();
+        Map<String, Integer> wordCountByAuthor = sd.calculateThisMonthWordCountByAuthor();
+        ChartSeries authorWordCountSeries = new ChartSeries();
+        authorWordCountSeries.setLabel("Word Count");
+        for (Map.Entry<String,Integer> authorWordCount: wordCountByAuthor.entrySet()) {
+            authorWordCountSeries.set(authorWordCount.getKey(), authorWordCount.getValue());
+        }
+        
+        model.addSeries(authorWordCountSeries);
+        return model;
+    }
+    private void createWordCountByAuthorModel() {
+        barModelWordByAuthor = initWordCountByAuthorModel();
+ 
+        barModelWordByAuthor.setTitle("This Month Word Count");
+        barModelWordByAuthor.setLegendPosition("ne");
+        barModelWordByAuthor.setShowPointLabels(true);
+        Axis xAxis = barModelWordByAuthor.getAxis(AxisType.X);
+        xAxis.setLabel("Author");
+ 
+        Axis yAxis = barModelWordByAuthor.getAxis(AxisType.Y);
+        yAxis.setLabel("Word Count");
+//        yAxis.setMin(0);
+//        yAxis.setMax(200);
+    }
+    private LineChartModel initWordCountModel() {
+        Map<String, Integer> monthWiseWordCount = sd.calculateMonthWiseWordCount();;
+        
+        ArrayList<String> sortedKeys = new ArrayList<>(monthWiseWordCount.keySet());
+        Collections.sort(sortedKeys);
+        LineChartModel model = new LineChartModel();
+
+        ChartSeries monthWisePostCountChartSeries = new ChartSeries();
+        monthWisePostCountChartSeries.setLabel("Month Wise Word Count");
+
+        for (String yearMonth : sortedKeys) {
+            int count = monthWiseWordCount.get(yearMonth);
+            monthWisePostCountChartSeries.set(yearMonth, count);
+        }
+
+        model.addSeries(monthWisePostCountChartSeries);
+
+        return model;
+    }
+
+    private void createWordCountModel() {
+
+        wordCount = initWordCountModel();
+        wordCount.setTitle("Word Count");
+        wordCount.setLegendPosition("e");
+        wordCount.setShowPointLabels(true);
+
+        wordCount.getAxes().put(AxisType.X, new CategoryAxis("YearsMonth"));
+        Axis yAxis = wordCount.getAxis(AxisType.Y);
+        yAxis.setLabel("Count");
+//        yAxis.setMin(0);
+//        yAxis.setMax(200);
+        Axis xAxis = wordCount.getAxis(AxisType.X);
+        xAxis.setTickAngle(90);
+
+    }
+
+    private LineChartModel initEntryCountModel() {
+        Map<String, Integer> monthWisePostCount = sd.calculateMonthWisePostCount();
+        ArrayList<String> sortedKeys = new ArrayList<String>(monthWisePostCount.keySet());
+        Collections.sort(sortedKeys);
+        LineChartModel model = new LineChartModel();
+
+        ChartSeries monthWisePostCountChartSeries = new ChartSeries();
+        monthWisePostCountChartSeries.setLabel("Post Count");
+
+        for (String yearMonth : sortedKeys) {
+            int count = monthWisePostCount.get(yearMonth);
+            monthWisePostCountChartSeries.set(yearMonth, count);
+        }
+
+        model.addSeries(monthWisePostCountChartSeries);
+
+        return model;
+    }
+
+    private void createEntryCountModel() {
+
+        entryCount = initEntryCountModel();
+        entryCount.setTitle("Entry Count");
         entryCount.setLegendPosition("e");
         entryCount.setShowPointLabels(true);
-        entryCount.setDatatipFormat("%'.0f");
+
         entryCount.getAxes().put(AxisType.X, new CategoryAxis("YearsMonth"));
         Axis yAxis = entryCount.getAxis(AxisType.Y);
         yAxis.setLabel("Count");
-        yAxis.setMin(0);
-        yAxis.setMax(200);
+//        yAxis.setMin(0);
+//        yAxis.setMax(200);
         Axis xAxis = entryCount.getAxis(AxisType.X);
         xAxis.setTickAngle(90);
-        
-        
+
     }
-    private Map<String,Integer> getData() {
+
+    private void getData() {
         String statsFileName = "/home/dgrfi/MEGA/purankosh/stats/Content20191107.csv";
-        StatsData sd = new ReadData(statsFileName).readStatsData();
-        Map<String,Integer> monthWisePostCount = sd.calculateMonthWisePostCount();
-        return monthWisePostCount;
+        sd = new ReadData(statsFileName).readStatsData();
     }
+
+
+   
 }
