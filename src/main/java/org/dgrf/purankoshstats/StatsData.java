@@ -5,6 +5,7 @@
  */
 package org.dgrf.purankoshstats;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -121,4 +122,11 @@ public class StatsData {
         //monthWisePostCount.entrySet().stream().forEach(mwc->System.out.println(mwc.getKey()+" "+mwc.getValue()));
         return postCountByAuthor;
     }
+    
+    public String getLastMonthName() {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
+        cal.add(Calendar.MONTH, -1);
+        String month = new SimpleDateFormat("MMM").format(cal.getTime());
+        return month;
+    } 
 }

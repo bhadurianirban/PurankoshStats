@@ -6,9 +6,12 @@
 package org.dgrf.purankoshstats;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
+import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -88,7 +91,7 @@ public class LiveStatus implements Serializable {
         BarChartModel model = new BarChartModel();
         Map<String, Integer> wordCountByAuthor = sd.calculateThisMonthPostCountByAuthor();
         ChartSeries authorWordCountSeries = new ChartSeries();
-        authorWordCountSeries.setLabel("Post Count");
+        authorWordCountSeries.setLabel("Count");
         for (Map.Entry<String,Integer> authorWordCount: wordCountByAuthor.entrySet()) {
             authorWordCountSeries.set(authorWordCount.getKey(), authorWordCount.getValue());
         }
@@ -97,9 +100,10 @@ public class LiveStatus implements Serializable {
         return model;
     }
     private void createPostCountByAuthorModel() {
+        String month = sd.getLastMonthName();
         barModelCountByAuthor = initPostCountByAuthorModel();
  
-        barModelCountByAuthor.setTitle("This Month Entry Count");
+        barModelCountByAuthor.setTitle("This "+month+" Entry Count");
         barModelCountByAuthor.setLegendPosition("ne");
         barModelCountByAuthor.setShowPointLabels(true);
         Axis xAxis = barModelCountByAuthor.getAxis(AxisType.X);
@@ -115,7 +119,7 @@ public class LiveStatus implements Serializable {
         BarChartModel model = new BarChartModel();
         Map<String, Integer> wordCountByAuthor = sd.calculateThisMonthWordCountByAuthor();
         ChartSeries authorWordCountSeries = new ChartSeries();
-        authorWordCountSeries.setLabel("Word Count");
+        authorWordCountSeries.setLabel("Count");
         for (Map.Entry<String,Integer> authorWordCount: wordCountByAuthor.entrySet()) {
             authorWordCountSeries.set(authorWordCount.getKey(), authorWordCount.getValue());
         }
@@ -124,9 +128,9 @@ public class LiveStatus implements Serializable {
         return model;
     }
     private void createWordCountByAuthorModel() {
+        String month = sd.getLastMonthName();
         barModelWordByAuthor = initWordCountByAuthorModel();
- 
-        barModelWordByAuthor.setTitle("This Month Word Count");
+        barModelWordByAuthor.setTitle("This "+month+" Word Count");
         barModelWordByAuthor.setLegendPosition("ne");
         barModelWordByAuthor.setShowPointLabels(true);
         Axis xAxis = barModelWordByAuthor.getAxis(AxisType.X);
