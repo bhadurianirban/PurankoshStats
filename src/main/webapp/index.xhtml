@@ -11,31 +11,21 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
             <meta name="apple-mobile-web-app-capable" content="yes" />
         </f:facet>
-        <link rel="shortcut icon" type="image/x-icon" href="omega-layout/images/dgrflogo.png"/>
+        <link rel="shortcut icon" type="image/x-icon" href="resources/omega-layout/images/dgrflogo.png"/>
         <title>Purankosh Statistics</title>
     </h:head>
     <h:body>
-        <p:graphicImage name="images/dgrflogo.png" library="omega-layout" width="40" height="20" style="padding-left: 45%"/>
+        <div style="text-align: center"><h2>Purankosh Stats</h2><hr></hr><i>Updated every Saturday.</i></div>
+        
         <p:panelGrid columns="2" layout="grid" >
             <p:chart type="line" model="#{liveStatus.entryCount}" style="height:500px;"/>
             <p:chart type="line" model="#{liveStatus.wordCount}" style="height:500px;"/>
             <p:chart type="bar" model="#{liveStatus.barModelWordByAuthor}" style="height:500px;"/>
             <p:chart type="bar" model="#{liveStatus.barModelCountByAuthor}" style="height:500px;"/>
         </p:panelGrid>
-
-
-
-       
-
-
-
-
-
-        <div style="text-align: center">©  <a class="tag-cloud-link" href="http://www.dgfoundation.in">Deepa Ghosh Research Foundation</a></div>
-
-
+        <div style="text-align: center"><p:graphicImage name="images/dgrflogo.png" library="omega-layout" width="40" height="20" />©  <a class="tag-cloud-link" href="http://www.dgfoundation.in">Deepa Ghosh Research Foundation</a></div>
         <h:outputStylesheet name="css/layout.css" library="omega-layout" />
-
+        <h:outputStylesheet name="css/term-blue.css" library="term" />
     </h:body>
 
 </html>

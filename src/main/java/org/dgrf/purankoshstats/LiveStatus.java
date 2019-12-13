@@ -149,7 +149,7 @@ public class LiveStatus implements Serializable {
         LineChartModel model = new LineChartModel();
 
         ChartSeries monthWisePostCountChartSeries = new ChartSeries();
-        monthWisePostCountChartSeries.setLabel("Month Wise Word Count");
+        monthWisePostCountChartSeries.setLabel("Month Wise Word Count YoY");
 
         for (String yearMonth : sortedKeys) {
             int count = monthWiseWordCount.get(yearMonth);
@@ -185,7 +185,7 @@ public class LiveStatus implements Serializable {
         LineChartModel model = new LineChartModel();
 
         ChartSeries monthWisePostCountChartSeries = new ChartSeries();
-        monthWisePostCountChartSeries.setLabel("Post Count");
+        monthWisePostCountChartSeries.setLabel("Post Count YoY");
 
         for (String yearMonth : sortedKeys) {
             int count = monthWisePostCount.get(yearMonth);
@@ -215,7 +215,8 @@ public class LiveStatus implements Serializable {
     }
 
     private void getData() {
-        String statsFileName = "/home/dgrfi/MEGA/purankosh/stats/Content20191107.csv";
+        String statsFileName = "/root/purankosh/PuranStats.csv";
+        //String statsFileName = "/home/bhaduri/MEGA/purankosh/stats/Content20191107.csv";
         sd = new ReadData(statsFileName).readStatsData();
     }
 
